@@ -9,22 +9,15 @@ export async function GET(
 ) {
   try {
     validateMethod(req, ['GET']);
-    
+
     const projectId = params.id;
-    
+
     if (!projectId) {
       throw new ApiError('Project ID is required', 400);
     }
 
     const project = await prisma.project.findUnique({
       where: { id: projectId },
-      include: {
-        technologies: {
-          include: {
-            technology: true
-          }
-        }
-      }
     });
 
     if (!project) {
