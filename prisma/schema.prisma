@@ -10,3 +10,72 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+enum ProjectStatus {
+  IDEA
+  IN_PROGRESS
+  STABLE
+  COMPLETE
+}
+
+model Project {
+  id          String    @id @default(uuid())
+  title       String    @db.VarChar(255)
+  description String?   @db.Text
+  status      ProjectStatus @default(IDEA)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relationships
+  technologies ProjectTechnology[]
+  
+  @@index([status])
+}
+
+model Technology {
+  id          String    @id @default(uuid())
+  name        String    @unique @db.VarChar(100)
+  description String?   @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relationships
+  projects    ProjectTechnology[]
+  tags        TechnologyTag[]
+}
+
+model Tag {
+  id          String    @id @default(uuid())
+  name        String    @unique @db.VarChar(50)
+  description String?   @db.Text
+  color       String?   @default("#6b7280") @db.VarChar(7)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relationships
+  technologies TechnologyTag[]
+}
+
+// Many-to-many relationship between Technology and Tag
+model TechnologyTag {
+  technology    Technology @relation(fields: [technologyId], references: [id], onDelete: Cascade)
+  technologyId  String
+  tag           Tag        @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId         String
+  
+  @@id([technologyId, tagId])
+  @@index([technologyId])
+  @@index([tagId])
+}
+
+// Many-to-many relationship between Project and Technology
+model ProjectTechnology {
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   String
+  technology  Technology @relation(fields: [technologyId], references: [id], onDelete: Cascade)
+  technologyId String
+  
+  @@id([projectId, technologyId])
+  @@index([projectId])
+  @@index([technologyId])
+}
