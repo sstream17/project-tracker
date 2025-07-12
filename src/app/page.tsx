@@ -1,3 +1,5 @@
+import { DashboardMetrics } from "@/components/DashboardMetrics";
+import { prisma } from "@/lib/prisma";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -5,14 +7,28 @@ export const metadata: Metadata = {
   description: "Track your progress in learning and applying new web technologies through side projects.",
 };
 
-export default function DashboardPage() {
+
+export default async function DashboardPage() {
+  const projects = await prisma.project.findMany({
+    include: {
+      technologies: true,
+    },
+  });
+
+  const technologiesInUse = new Set<string>();
+  projects.forEach(project => {
+    project.technologies.forEach(tech => {
+      technologiesInUse.add(tech.technologyId);
+    });
+  });
+
   return (
     <main className="p-6">
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-      {/* TODO: Add summary charts and metrics here */}
-      <div className="rounded border p-4 bg-muted text-muted-foreground">
-        Summary charts and metrics will appear here.
-      </div>
+      <DashboardMetrics
+        projectCount={projects.length}
+        technologiesInUseCount={technologiesInUse.size}
+      />
     </main>
   );
 }
