@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+.env
+.env.*
+*.sqlite
+.prisma
+*.log
+coverage
+.DS_Store
+.vscode

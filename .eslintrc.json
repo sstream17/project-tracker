@@ -1,0 +1,4 @@
+// Add custom ESLint rules here as needed
+{
+  "extends": ["next/core-web-vitals", "plugin:prettier/recommended"]
+}
