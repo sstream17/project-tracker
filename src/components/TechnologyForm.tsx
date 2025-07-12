@@ -3,13 +3,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Technology, Tag } from "@prisma/client";
+import TagsEditor from "./TagsEditor";
 
 type TechnologyFormProps = Technology & {
-    tags: Tag[];
+    tags?: Tag[];
 };
 
-export default function TechnologyForm({ technology: initialTechnology }: { technology: TechnologyFormProps }) {
-    const [technology, setTechnology] = useState<TechnologyFormProps>(initialTechnology);
+export default function TechnologyForm({ technology: initialTechnology }: { technology?: TechnologyFormProps }) {
+    const [technology, setTechnology] = useState<TechnologyFormProps>(initialTechnology ?? {
+        id: "",
+        name: "",
+        description: "",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const router = useRouter();
@@ -71,15 +78,7 @@ export default function TechnologyForm({ technology: initialTechnology }: { tech
                 />
             </div>
             <div>
-                <label className="block font-medium mb-1">Tags</label>
-                <input
-                    type="text"
-                    name="tags"
-                    value={technology.tags?.map(tag => tag.name).join(",")}
-                    onChange={handleChange}
-                    className="w-full border rounded px-3 py-2"
-                    required
-                />
+                <TagsEditor value={technology.tags ?? []} onChange={(tags) => setTechnology({ ...technology, tags })} />
             </div>
             <button
                 type="submit"

@@ -1,6 +1,7 @@
-import { Metadata } from "next";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -13,6 +14,9 @@ export default async function TechnologiesPage() {
   return (
     <main className="p-6">
       <h1 className="text-2xl font-bold mb-4">Technologies</h1>
+      <Button asChild>
+        <Link href="/technologies/new">Add Technology</Link>
+      </Button>
       <div className="flex flex-wrap gap-2">
         {technologies.map((technology) => (
           <Link href={`/technologies/${technology.id}/edit`} key={technology.id}>
