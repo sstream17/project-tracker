@@ -26,7 +26,7 @@ export default async function TagsPage() {
                   <CardTitle className="text-sm font-medium">{tag.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {tag.description && <p className="text-xs text-muted-foreground">
+                  {tag.description && <p className="text-xs">
                     {tag.description}
                   </p>}
                 </CardContent>

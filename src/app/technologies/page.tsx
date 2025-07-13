@@ -25,7 +25,7 @@ export default async function TechnologiesPage() {
                 <CardTitle className="text-sm font-medium">{technology.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                {technology.description && <p className="text-xs text-muted-foreground">
+                {technology.description && <p className="text-xs">
                   {technology.description}
                 </p>}
               </CardContent>
