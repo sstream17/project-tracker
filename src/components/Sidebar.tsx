@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, FolderCode, Cpu } from 'lucide-react';
+import { Home, FolderCode, Cpu, Tag } from 'lucide-react';
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -40,6 +40,13 @@ export function Sidebar() {
         >
           <Cpu className="h-4 w-4" />
           Technologies
+        </Link>
+        <Link 
+          href="/tags" 
+          className={`flex items-center gap-3 rounded-lg px-4 py-2 text-sm font-medium hover:bg-accent ${isActive('/tags') ? 'text-accent-foreground' : ''}`}
+        >
+          <Tag className="h-4 w-4" />
+          Tags
         </Link>
       </nav>
   );

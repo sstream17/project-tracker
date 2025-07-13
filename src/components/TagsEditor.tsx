@@ -25,10 +25,10 @@ export default function TagsEditor({ value, onChange, disabled }: TagsEditorProp
 
   const filtered = input
     ? allTags.filter(
-        (tag) =>
-          tag.name.toLowerCase().includes(input.toLowerCase()) &&
-          !value.some((t) => t.id === tag.id)
-      )
+      (tag) =>
+        tag.name.toLowerCase().includes(input.toLowerCase()) &&
+        !value.some((t) => t.id === tag.id)
+    )
     : allTags.filter((tag) => !value.some((t) => t.id === tag.id));
 
   const isNewTag =
@@ -64,7 +64,7 @@ export default function TagsEditor({ value, onChange, disabled }: TagsEditorProp
 
   return (
     <>
-        <label className="block font-medium mb-1">Tags</label>
+      <label className="block font-medium mb-1">Tags</label>
       <div className="bg-muted border border-border rounded-lg shadow p-4">
         <div className="flex flex-wrap gap-2 mb-2 min-h-[32px]">
           {value.map((tag) => (
@@ -90,46 +90,46 @@ export default function TagsEditor({ value, onChange, disabled }: TagsEditorProp
         {/* Combobox UI - replace with shadcn/ui Combobox primitives */}
         <div className="relative">
           {/* <Combobox> */}
-            {/* <ComboboxInput /> */}
-            <input
-              type="text"
-              className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder={loading ? "Loading..." : "Search or create tag..."}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              disabled={disabled || loading || creating}
-            />
-            {(filtered.length > 0 || isNewTag) && input && (
-              <div className="absolute left-0 right-0 mt-1 bg-popover border border-border rounded-lg shadow-lg z-20 max-h-56 overflow-auto">
-                {filtered.map((tag) => (
-                  <button
-                    key={tag.id}
-                    type="button"
-                    className="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-accent focus:bg-accent text-left"
-                    style={{ color: tag.color || undefined }}
-                    onClick={() => handleSelectTag(tag)}
-                    disabled={disabled}
-                  >
-                    {/* <Check className="mr-2 h-4 w-4 opacity-0 group-data-[selected]:opacity-100" /> */}
-                    <span className="block font-medium">{tag.name}</span>
-                    {tag.description && (
-                      <span className="ml-2 text-xs text-muted-foreground">{tag.description}</span>
-                    )}
-                  </button>
-                ))}
-                {isNewTag && (
-                  <button
-                    type="button"
-                    className="flex w-full items-center gap-2 px-4 py-2 text-sm bg-green-50 hover:bg-green-100 text-green-800"
-                    onClick={() => handleCreateTag(input)}
-                    disabled={creating || disabled}
-                  >
-                    {/* <Plus className="h-4 w-4" /> */}
-                    {creating ? "Creating..." : `Create new tag: "${input}"`}
-                  </button>
-                )}
-              </div>
-            )}
+          {/* <ComboboxInput /> */}
+          <input
+            type="text"
+            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder={loading ? "Loading..." : "Search or create tag..."}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            disabled={disabled || loading || creating}
+          />
+          {(filtered.length > 0 || isNewTag) && input && (
+            <div className="absolute left-0 right-0 mt-1 bg-popover border border-border rounded-lg shadow-lg z-20 max-h-56 overflow-auto">
+              {filtered.map((tag) => (
+                <button
+                  key={tag.id}
+                  type="button"
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-accent focus:bg-accent text-left"
+                  style={{ color: tag.color || undefined }}
+                  onClick={() => handleSelectTag(tag)}
+                  disabled={disabled}
+                >
+                  {/* <Check className="mr-2 h-4 w-4 opacity-0 group-data-[selected]:opacity-100" /> */}
+                  <span className="block font-medium">{tag.name}</span>
+                  {tag.description && (
+                    <span className="ml-2 text-xs text-muted-foreground">{tag.description}</span>
+                  )}
+                </button>
+              ))}
+              {isNewTag && (
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm bg-green-50 hover:bg-green-100 text-green-800"
+                  onClick={() => handleCreateTag(input)}
+                  disabled={creating || disabled}
+                >
+                  {/* <Plus className="h-4 w-4" /> */}
+                  {creating ? "Creating..." : `Create new tag: "${input}"`}
+                </button>
+              )}
+            </div>
+          )}
           {/* </Combobox> */}
         </div>
       </div>
