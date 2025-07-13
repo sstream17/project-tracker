@@ -17,21 +17,23 @@ export default async function TagsPage() {
       <Button asChild>
         <Link href="/tags/new">Add Tag</Link>
       </Button>
-      <div className="flex flex-wrap gap-2">
-        {tags.map((tag) => (
-          <Link href={`/tags/${tag.id}/edit`} key={tag.id}>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                <CardTitle className="text-sm font-medium">{tag.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {tag.description && <p className="text-xs text-muted-foreground">
-                  {tag.description}
-                </p>}
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+      <div className="flex flex-wrap gap-2 p-4">
+        {tags.map((tag) => {
+          return (
+            <Link href={`/tags/${tag.id}/edit`} key={tag.id}>
+              <Card style={{ backgroundColor: `${tag.color ?? "#e5e7eb"}99` }}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                  <CardTitle className="text-sm font-medium">{tag.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {tag.description && <p className="text-xs text-muted-foreground">
+                    {tag.description}
+                  </p>}
+                </CardContent>
+              </Card>
+            </Link>
+          )
+        })}
       </div>
     </main>
   );

@@ -17,7 +17,7 @@ export default async function TechnologiesPage() {
       <Button asChild>
         <Link href="/technologies/new">Add Technology</Link>
       </Button>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 p-4">
         {technologies.map((technology) => (
           <Link href={`/technologies/${technology.id}/edit`} key={technology.id}>
             <Card>
