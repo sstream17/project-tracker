@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
@@ -10,7 +11,11 @@ export const metadata: Metadata = {
 };
 
 export default async function TechnologiesPage() {
-  const technologies = await prisma.technology.findMany();
+  const technologies = await prisma.technology.findMany({
+    include: {
+      tags: true,
+    },
+  });
   return (
     <main className="p-6">
       <h1 className="text-2xl font-bold mb-4">Technologies</h1>
@@ -20,14 +25,21 @@ export default async function TechnologiesPage() {
       <div className="flex flex-wrap gap-2 p-4">
         {technologies.map((technology) => (
           <Link href={`/technologies/${technology.id}/edit`} key={technology.id}>
-            <Card>
+            <Card style={{ backgroundColor: `${technology.color ?? "#e5e7eb"}99` }}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-sm font-medium">{technology.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                {technology.description && <p className="text-xs">
-                  {technology.description}
-                </p>}
+                <>
+                  {technology.description && <p className="text-xs">
+                    {technology.description}
+                  </p>}
+                  {technology.tags.map((tag) => (
+                    <Badge key={tag.id} style={{ backgroundColor: tag.color ?? "#e5e7eb" }}>
+                      {tag.name}
+                    </Badge>
+                  ))}
+                </>
               </CardContent>
             </Card>
           </Link>
