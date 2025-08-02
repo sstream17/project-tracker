@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
       include: {
         technologies: {
           include: {
-            technology: true
+            tags: true
           }
         }
       },

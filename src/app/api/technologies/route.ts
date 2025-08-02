@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
       include: {
         tags: {
           include: {
-            tag: true
+            technologies: true
           }
         },
         _count: {
