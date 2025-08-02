@@ -1,5 +1,7 @@
 "use client";
 import { Project } from "@prisma/client";
+import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 export type ProjectStatus = "IDEA" | "IN_PROGRESS" | "STABLE" | "COMPLETE";
 
@@ -45,10 +47,18 @@ export default function ProjectSwimlanes({ projects }: ProjectSwimlanesProps) {
                             <div className="text-xs text-gray-400 text-center">No projects</div>
                         ) : (
                             projectsByStatus[status].map((project) => (
-                                <div key={project.id} className="rounded border p-2 bg-blue-50 hover:bg-blue-100 transition">
-                                    <div className="font-medium text-blue-900">{project.title}</div>
-                                    <div className="text-xs text-gray-600 truncate">{project.description}</div>
-                                </div>
+                                <Link href={`/projects/${project.id}/edit`} key={project.id}>
+                                    <Card>
+                                        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                                            <CardTitle className="text-sm font-medium">{project.title}</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            {project.description && <p className="text-xs">
+                                                {project.description}
+                                            </p>}
+                                        </CardContent>
+                                    </Card>
+                                </Link>
                             ))
                         )}
                     </div>
