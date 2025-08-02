@@ -1,22 +1,20 @@
-// import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem, ComboboxEmpty, ComboboxTrigger, ComboboxList } from "@/components/ui/combobox";
-// import { Check, Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 type Item = { id: string; name: string };
 
-interface TagsEditorProps {
-  value: Item[];
-  onChange: (items: Item[]) => void;
+interface TagsEditorProps<T extends Item> {
+  value: T[];
+  onChange: (items: T[]) => void;
   disabled?: boolean;
   fetchUrl: string;
   createUrl: string;
   label: string;
   placeholder?: string;
-  itemLabel?: (item: Item) => React.ReactNode;
+  itemLabel?: (item: T) => React.ReactNode;
 }
 
-export default function TagsEditor({ value, onChange, disabled, fetchUrl, createUrl, label, placeholder = "Search or create...", itemLabel }: TagsEditorProps) {
-  const [allItems, setAllItems] = useState<Item[]>([]);
+export default function MultiSelectItemInput<T extends Item>({ value, onChange, disabled, fetchUrl, createUrl, label, placeholder = "Search or create...", itemLabel }: TagsEditorProps<T>) {
+  const [allItems, setAllItems] = useState<T[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -41,7 +39,7 @@ export default function TagsEditor({ value, onChange, disabled, fetchUrl, create
     input.length > 0 &&
     !allItems.some((item) => item.name.toLowerCase() === input.toLowerCase());
 
-  const handleSelectItem = (item: Item) => {
+  const handleSelectItem = (item: T) => {
     onChange([...value, item]);
     setInput("");
   };

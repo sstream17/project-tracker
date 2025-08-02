@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-import TagsEditor from "./TagsEditor";
+import MultiSelectItemInput from "./MultiSelectItemInput";
 
 type FormData = {
   id?: string;
@@ -121,7 +121,7 @@ export default function TechnologyForm({ technology: initialTechnology }: Techno
 
       <div>
         <label className="block font-medium mb-1">Tags</label>
-        <TagsEditor
+        <MultiSelectItemInput<Tag>
           value={currentTags}
           onChange={(tags) => setValue("tags", tags, { shouldValidate: true })}
           fetchUrl="/api/tags"

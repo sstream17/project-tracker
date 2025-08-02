@@ -1,12 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProjectStatus, Tag, Technology } from "@prisma/client";
+import { ProjectStatus, Technology } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-import TagsEditor from "./TagsEditor";
+import MultiSelectItemInput from "./MultiSelectItemInput";
 
 type FormData = {
   id?: string;
@@ -125,7 +125,7 @@ export default function ProjectForm({ project: initialProject }: ProjectFormProp
 
       <div>
         <label className="block font-medium mb-1">Technologies</label>
-        <TagsEditor
+        <MultiSelectItemInput<Technology>
           value={currentTechnologies}
           onChange={(technologies) => setValue("technologies", technologies, { shouldValidate: true })}
           fetchUrl="/api/technologies"
