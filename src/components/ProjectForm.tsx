@@ -124,6 +124,26 @@ export default function ProjectForm({ project: initialProject }: ProjectFormProp
       </div>
 
       <div>
+        <label htmlFor="status" className="block font-medium mb-1">
+          Status <span className="text-red-500">*</span>
+        </label>
+        <select
+          id="status"
+          className={`w-full border rounded px-3 py-2 ${errors.status ? "border-red-500" : "border-gray-300"
+            }`}
+          {...register("status")}
+        >
+          <option value="IDEA">Idea</option>
+          <option value="IN_PROGRESS">In Progress</option>
+          <option value="STABLE">Stable</option>
+          <option value="COMPLETE">Complete</option>
+        </select>
+        {errors.status && (
+          <p className="mt-1 text-sm text-red-600">{errors.status.message}</p>
+        )}
+      </div>
+
+      <div>
         <MultiSelectItemInput<Technology>
           value={currentTechnologies}
           onChange={(technologies) => setValue("technologies", technologies, { shouldValidate: true })}
