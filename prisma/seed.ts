@@ -15,8 +15,8 @@ async function main() {
         { name: 'UI', description: 'User interface tools and utilities', color: '#38BDF8' },   // Tailwind blue
         { name: 'Tooling', description: 'Build and development tools', color: '#646CFF' },     // Vite purple
         { name: 'API', description: 'Interface for accessing application logic', color: '#E34F26' }, // Express/Node orange-red
+        { name: 'AI', description: 'Artificial Intelligence', color: '#E592BB' },
     ];
-
 
     const tags = await Promise.all(
         tagsData.map((tag) =>
@@ -35,51 +35,61 @@ async function main() {
         {
             name: 'React',
             description: 'A JavaScript library for building user interfaces',
+            color: '#61DAFB',
             tagNames: ['Frontend', 'JavaScript', 'Library', 'UI'],
         },
         {
             name: 'Next.js',
             description: 'React framework for production',
+            color: '#61DAFB',
             tagNames: ['Frontend', 'JavaScript', 'Framework'],
         },
         {
             name: 'TypeScript',
             description: 'A superset of JavaScript that compiles to plain JavaScript',
+            color: '#3178C6',
             tagNames: ['JavaScript', 'TypeScript', 'Tooling'],
         },
         {
             name: 'Tailwind CSS',
             description: 'Utility-first CSS framework for rapid UI development',
+            color: '#38BDF8',
             tagNames: ['CSS', 'Frontend', 'UI'],
         },
         {
             name: 'Node.js',
             description: 'JavaScript runtime built on Chrome\'s V8 engine',
+            color: '#3C873A',
             tagNames: ['Backend', 'JavaScript', 'API'],
         },
         {
             name: 'Express',
             description: 'Minimal and flexible Node.js web application framework',
+            color: '#3C873A',
             tagNames: ['Backend', 'JavaScript', 'Framework', 'API'],
         },
         {
             name: 'Prisma',
             description: 'Next-generation ORM for Node.js and TypeScript',
+            color: '#336791',
             tagNames: ['Backend', 'ORM', 'Database', 'TypeScript'],
         },
         {
             name: 'PostgreSQL',
             description: 'A powerful, open source object-relational database system',
+            color: '#336791',
             tagNames: ['Database', 'Backend'],
         },
         {
             name: 'Vite',
             description: 'Next Generation Frontend Tooling',
+            color: '#646CFF',
             tagNames: ['Frontend', 'Tooling'],
         },
         {
             name: 'Zod',
             description: 'TypeScript-first schema validation with static type inference',
+            color: '#646CFF',
             tagNames: ['TypeScript', 'Tooling'],
         },
     ];
@@ -91,6 +101,7 @@ async function main() {
             create: {
                 name: tech.name,
                 description: tech.description,
+                color: tech.color,
                 tags: {
                     connect: getTagIds(...tech.tagNames),
                 },

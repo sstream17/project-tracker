@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-type Item = { id: string; name: string };
+type Item = { id: string; name: string; color: string | null; };
 
 interface TagsEditorProps<T extends Item> {
   value: T[];
@@ -13,7 +13,18 @@ interface TagsEditorProps<T extends Item> {
   itemLabel?: (item: T) => React.ReactNode;
 }
 
-export default function MultiSelectItemInput<T extends Item>({ value, onChange, disabled, fetchUrl, createUrl, label, placeholder = "Search or create...", itemLabel }: TagsEditorProps<T>) {
+export default function MultiSelectItemInput<T extends Item>(
+  {
+    value,
+    onChange,
+    disabled,
+    fetchUrl,
+    createUrl,
+    label,
+    placeholder = "Search or create...",
+    itemLabel,
+  }: TagsEditorProps<T>
+) {
   const [allItems, setAllItems] = useState<T[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,10 +40,10 @@ export default function MultiSelectItemInput<T extends Item>({ value, onChange, 
 
   const filtered = input
     ? allItems.filter(
-        (item) =>
-          item.name.toLowerCase().includes(input.toLowerCase()) &&
-          !value.some((t) => t.id === item.id)
-      )
+      (item) =>
+        item.name.toLowerCase().includes(input.toLowerCase()) &&
+        !value.some((t) => t.id === item.id)
+    )
     : allItems.filter((item) => !value.some((t) => t.id === item.id));
 
   const isNewItem =
@@ -75,6 +86,7 @@ export default function MultiSelectItemInput<T extends Item>({ value, onChange, 
             <span
               key={item.id}
               className="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gray-200"
+              style={{ backgroundColor: item.color || "#e5e7eb" }}
             >
               {itemLabel ? itemLabel(item) : item.name}
               {!disabled && (
@@ -109,6 +121,7 @@ export default function MultiSelectItemInput<T extends Item>({ value, onChange, 
                   key={item.id}
                   type="button"
                   className="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-accent focus:bg-accent text-left"
+                  style={{ color: item.color || undefined }}
                   onClick={() => handleSelectItem(item)}
                   disabled={disabled}
                 >
