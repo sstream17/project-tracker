@@ -71,12 +71,26 @@ export default function ProjectSwimlanes({ projects: initialProjects }: ProjectS
         const newStatus = over.id as ProjectStatus;
         const project = projects.find((p) => p.id === projectId);
         if (project && project.status !== newStatus) {
+            // Optimistic UI update
             setProjects((prev) =>
                 prev.map((p) =>
                     p.id === projectId ? { ...p, status: newStatus } : p
                 )
             );
-            // TODO: Optionally call API to persist change
+            // Persist change to backend
+            fetch("/api/projects", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: projectId, status: newStatus }),
+            }).then((res) => {
+                if (!res.ok) {
+                    // Optionally: revert UI or show error
+                    // For now, just log
+                    console.error("Failed to update project status");
+                }
+            }).catch((err) => {
+                console.error("Failed to update project status", err);
+            });
         }
     }
 
