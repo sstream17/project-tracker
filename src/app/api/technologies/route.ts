@@ -1,17 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { ApiError, handleApiError, parseBody, validateMethod } from '@/lib/api-utils';
 import { prisma } from '@/lib/prisma';
-import { ApiError, handleApiError, validateMethod, parseBody } from '@/lib/api-utils';
+import { NextRequest, NextResponse } from 'next/server';
 
 type TechnologyInput = {
   name: string;
   description?: string;
+  tags?: string[];
 };
 
 // GET /api/technologies - Get all technologies
 export async function GET(req: NextRequest) {
   try {
     validateMethod(req, ['GET']);
-    
+
     const technologies = await prisma.technology.findMany({
       include: {
         tags: {
@@ -36,8 +37,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     validateMethod(req, ['POST']);
-    
-    const { name, description } = await parseBody<TechnologyInput>(req);
+
+    const { name, description, tags } = await parseBody<TechnologyInput>(req);
 
     if (!name) {
       throw new ApiError('Name is required', 400);
@@ -47,6 +48,9 @@ export async function POST(req: NextRequest) {
       data: {
         name,
         description,
+        tags: {
+          connect: tags?.map((tag: string) => ({ id: tag })) || [],
+        },
       },
     });
 
@@ -60,7 +64,7 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     validateMethod(req, ['PATCH']);
-    
+
     const data = await parseBody<{ id: string } & Partial<TechnologyInput>>(req);
     const { id, ...updateData } = data;
 
@@ -70,7 +74,12 @@ export async function PATCH(req: NextRequest) {
 
     const technology = await prisma.technology.update({
       where: { id },
-      data: updateData,
+      data: {
+        ...updateData,
+        tags: {
+          connect: updateData.tags?.map((tag: string) => ({ id: tag })) || [],
+        }
+      },
     });
 
     return NextResponse.json(technology);
@@ -83,7 +92,7 @@ export async function PATCH(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     validateMethod(req, ['DELETE']);
-    
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
 

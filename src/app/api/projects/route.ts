@@ -1,18 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { ApiError, handleApiError, parseBody, validateMethod } from '@/lib/api-utils';
 import { prisma } from '@/lib/prisma';
-import { ApiError, handleApiError, validateMethod, parseBody } from '@/lib/api-utils';
+import { NextRequest, NextResponse } from 'next/server';
 
 type ProjectInput = {
   title: string;
   description?: string;
   status: 'IDEA' | 'IN_PROGRESS' | 'STABLE' | 'COMPLETE';
+  technologies?: string[];
 };
 
 // GET /api/projects - Get all projects
 export async function GET(req: NextRequest) {
   try {
     validateMethod(req, ['GET']);
-    
+
     const projects = await prisma.project.findMany({
       include: {
         technologies: {
@@ -34,9 +35,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     validateMethod(req, ['POST']);
-    
-    const data = await parseBody<ProjectInput>(req);
-    const { title, description, status } = data;
+
+    const { title, description, status, technologies } = await parseBody<ProjectInput>(req);
 
     if (!title) {
       throw new ApiError('Title is required', 400);
@@ -47,6 +47,9 @@ export async function POST(req: NextRequest) {
         title,
         description,
         status: status || 'IDEA',
+        technologies: {
+          connect: technologies?.map((tech: string) => ({ id: tech })) || [],
+        },
       },
     });
 
@@ -60,7 +63,7 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     validateMethod(req, ['PATCH']);
-    
+
     const data = await parseBody<{ id: string } & Partial<ProjectInput>>(req);
     const { id, ...updateData } = data;
 
@@ -70,7 +73,12 @@ export async function PATCH(req: NextRequest) {
 
     const project = await prisma.project.update({
       where: { id },
-      data: updateData,
+      data: {
+        ...updateData,
+        technologies: {
+          connect: updateData.technologies?.map((tech: string) => ({ id: tech })) || [],
+        }
+      },
     });
 
     return NextResponse.json(project);
@@ -83,7 +91,7 @@ export async function PATCH(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     validateMethod(req, ['DELETE']);
-    
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
 
