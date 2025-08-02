@@ -120,7 +120,6 @@ export default function TechnologyForm({ technology: initialTechnology }: Techno
       </div>
 
       <div>
-        <label className="block font-medium mb-1">Tags</label>
         <MultiSelectItemInput<Tag>
           value={currentTags}
           onChange={(tags) => setValue("tags", tags, { shouldValidate: true })}

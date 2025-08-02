@@ -124,7 +124,6 @@ export default function ProjectForm({ project: initialProject }: ProjectFormProp
       </div>
 
       <div>
-        <label className="block font-medium mb-1">Technologies</label>
         <MultiSelectItemInput<Technology>
           value={currentTechnologies}
           onChange={(technologies) => setValue("technologies", technologies, { shouldValidate: true })}
