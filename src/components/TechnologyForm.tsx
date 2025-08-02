@@ -27,7 +27,7 @@ const technologyFormSchema = z.object({
 });
 
 type TechnologyFormProps = {
-  technology?: Partial<FormData> & { tags?: Tag[] };
+  technology?: Partial<FormData>;
 };
 
 export default function TechnologyForm({ technology: initialTechnology }: TechnologyFormProps) {
@@ -124,6 +124,10 @@ export default function TechnologyForm({ technology: initialTechnology }: Techno
         <TagsEditor
           value={currentTags}
           onChange={(tags) => setValue("tags", tags, { shouldValidate: true })}
+          fetchUrl="/api/tags"
+          createUrl="/api/tags"
+          label="Tags"
+          placeholder="Search or create tag..."
         />
       </div>
 

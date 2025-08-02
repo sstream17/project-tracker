@@ -1,61 +1,67 @@
 // import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem, ComboboxEmpty, ComboboxTrigger, ComboboxList } from "@/components/ui/combobox";
 // import { Check, Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { Tag } from "@prisma/client";
+
+type Item = { id: string; name: string };
 
 interface TagsEditorProps {
-  value: Tag[];
-  onChange: (tags: Tag[]) => void;
+  value: Item[];
+  onChange: (items: Item[]) => void;
   disabled?: boolean;
+  fetchUrl: string;
+  createUrl: string;
+  label: string;
+  placeholder?: string;
+  itemLabel?: (item: Item) => React.ReactNode;
 }
 
-export default function TagsEditor({ value, onChange, disabled }: TagsEditorProps) {
-  const [allTags, setAllTags] = useState<Tag[]>([]);
+export default function TagsEditor({ value, onChange, disabled, fetchUrl, createUrl, label, placeholder = "Search or create...", itemLabel }: TagsEditorProps) {
+  const [allItems, setAllItems] = useState<Item[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/tags")
+    fetch(fetchUrl)
       .then((res) => res.json())
-      .then((tags) => setAllTags(tags))
+      .then((items) => setAllItems(items))
       .finally(() => setLoading(false));
-  }, []);
+  }, [fetchUrl]);
 
   const filtered = input
-    ? allTags.filter(
-      (tag) =>
-        tag.name.toLowerCase().includes(input.toLowerCase()) &&
-        !value.some((t) => t.id === tag.id)
-    )
-    : allTags.filter((tag) => !value.some((t) => t.id === tag.id));
+    ? allItems.filter(
+        (item) =>
+          item.name.toLowerCase().includes(input.toLowerCase()) &&
+          !value.some((t) => t.id === item.id)
+      )
+    : allItems.filter((item) => !value.some((t) => t.id === item.id));
 
-  const isNewTag =
+  const isNewItem =
     input.length > 0 &&
-    !allTags.some((tag) => tag.name.toLowerCase() === input.toLowerCase());
+    !allItems.some((item) => item.name.toLowerCase() === input.toLowerCase());
 
-  const handleSelectTag = (tag: Tag) => {
-    onChange([...value, tag]);
+  const handleSelectItem = (item: Item) => {
+    onChange([...value, item]);
     setInput("");
   };
 
-  const handleRemoveTag = (id: string) => {
-    onChange(value.filter((tag) => tag.id !== id));
+  const handleRemoveItem = (id: string) => {
+    onChange(value.filter((item) => item.id !== id));
   };
 
-  const handleCreateTag = async (name: string) => {
+  const handleCreateItem = async (name: string) => {
     setCreating(true);
     try {
-      const res = await fetch("/api/tags", {
+      const res = await fetch(createUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name }),
       });
-      if (!res.ok) throw new Error("Failed to create tag");
-      const tag = await res.json();
-      setAllTags((tags) => [...tags, tag]);
-      onChange([...value, tag]);
+      if (!res.ok) throw new Error("Failed to create item");
+      const item = await res.json();
+      setAllItems((items) => [...items, item]);
+      onChange([...value, item]);
       setInput("");
     } finally {
       setCreating(false);
@@ -64,22 +70,21 @@ export default function TagsEditor({ value, onChange, disabled }: TagsEditorProp
 
   return (
     <>
-      <label className="block font-medium mb-1">Tags</label>
+      <label className="block font-medium mb-1">{label}</label>
       <div className="bg-muted border border-border rounded-lg shadow p-4">
         <div className="flex flex-wrap gap-2 mb-2 min-h-[32px]">
-          {value.map((tag) => (
+          {value.map((item) => (
             <span
-              key={tag.id}
-              className="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium"
-              style={{ backgroundColor: tag.color || "#e5e7eb", color: "#111" }}
+              key={item.id}
+              className="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gray-200"
             >
-              {tag.name}
+              {itemLabel ? itemLabel(item) : item.name}
               {!disabled && (
                 <button
                   type="button"
-                  onClick={() => handleRemoveTag(tag.id)}
+                  onClick={() => handleRemoveItem(item.id)}
                   className="ml-1 text-xs text-muted-foreground hover:text-destructive focus:outline-none"
-                  aria-label={`Remove ${tag.name}`}
+                  aria-label={`Remove ${item.name}`}
                 >
                   ×
                 </button>
@@ -94,38 +99,32 @@ export default function TagsEditor({ value, onChange, disabled }: TagsEditorProp
           <input
             type="text"
             className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder={loading ? "Loading..." : "Search or create tag..."}
+            placeholder={loading ? "Loading..." : placeholder}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={disabled || loading || creating}
           />
-          {(filtered.length > 0 || isNewTag) && input && (
+          {(filtered.length > 0 || isNewItem) && input && (
             <div className="absolute left-0 right-0 mt-1 bg-popover border border-border rounded-lg shadow-lg z-20 max-h-56 overflow-auto">
-              {filtered.map((tag) => (
+              {filtered.map((item) => (
                 <button
-                  key={tag.id}
+                  key={item.id}
                   type="button"
                   className="flex w-full items-center gap-2 px-4 py-2 text-sm hover:bg-accent focus:bg-accent text-left"
-                  style={{ color: tag.color || undefined }}
-                  onClick={() => handleSelectTag(tag)}
+                  onClick={() => handleSelectItem(item)}
                   disabled={disabled}
                 >
-                  {/* <Check className="mr-2 h-4 w-4 opacity-0 group-data-[selected]:opacity-100" /> */}
-                  <span className="block font-medium">{tag.name}</span>
-                  {tag.description && (
-                    <span className="ml-2 text-xs text-muted-foreground">{tag.description}</span>
-                  )}
+                  <span className="block font-medium">{itemLabel ? itemLabel(item) : item.name}</span>
                 </button>
               ))}
-              {isNewTag && (
+              {isNewItem && (
                 <button
                   type="button"
                   className="flex w-full items-center gap-2 px-4 py-2 text-sm bg-green-50 hover:bg-green-100 text-green-800"
-                  onClick={() => handleCreateTag(input)}
+                  onClick={() => handleCreateItem(input)}
                   disabled={creating || disabled}
                 >
-                  {/* <Plus className="h-4 w-4" /> */}
-                  {creating ? "Creating..." : `Create new tag: "${input}"`}
+                  {creating ? "Creating..." : `Create new: "${input}"`}
                 </button>
               )}
             </div>
