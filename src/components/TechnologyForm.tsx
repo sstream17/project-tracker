@@ -12,6 +12,7 @@ type FormData = {
   id?: string;
   name: string;
   description: string;
+  color?: string;
   tags?: Tag[];
   createdAt?: Date;
   updatedAt?: Date;
@@ -21,6 +22,7 @@ const technologyFormSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Name is required").max(100, "Name is too long"),
   description: z.string().min(1, "Description is required").max(1000, "Description is too long").optional(),
+  color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Invalid color format"),
   tags: z.array(z.any()).optional(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
@@ -46,6 +48,7 @@ export default function TechnologyForm({ technology: initialTechnology }: Techno
       id: initialTechnology?.id || "",
       name: initialTechnology?.name || "",
       description: initialTechnology?.description || "",
+      color: initialTechnology?.color || "#6b7280",
       tags: initialTechnology?.tags || [],
       createdAt: initialTechnology?.createdAt || new Date(),
       updatedAt: initialTechnology?.updatedAt || new Date(),
@@ -61,6 +64,7 @@ export default function TechnologyForm({ technology: initialTechnology }: Techno
           id: data.id,
           name: data.name,
           description: data.description,
+          color: data.color,
           tags: data.tags?.map((tag: Tag) => tag.id) || [],
         }),
       });
@@ -116,6 +120,30 @@ export default function TechnologyForm({ technology: initialTechnology }: Techno
         />
         {errors.description && (
           <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+        )}
+      </div>
+
+      <div>
+        <label htmlFor="color" className="block font-medium mb-1">
+          Color <span className="text-red-500">*</span>
+        </label>
+        <div className="flex items-center gap-2">
+          <input
+            id="color"
+            type="color"
+            className="h-10 w-16 cursor-pointer"
+            {...register("color")}
+          />
+          <input
+            type="text"
+            className={`flex-1 border rounded px-3 py-2 font-mono ${errors.color ? "border-red-500" : "border-gray-300"
+              }`}
+            value={watch("color")}
+            onChange={(e) => setValue("color", e.target.value)}
+          />
+        </div>
+        {errors.color && (
+          <p className="mt-1 text-sm text-red-600">{errors.color.message}</p>
         )}
       </div>
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { ApiError, handleApiError, validateMethod, parseBody } from '@/lib/api-utils';
+import { createColor } from '@/lib/create-color';
 
 type TagInput = {
   name: string;
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest) {
       data: {
         name,
         description,
-        color: color || '#6b7280',
+        color: color || createColor(name),
       },
     });
 

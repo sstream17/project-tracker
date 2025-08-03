@@ -1,4 +1,5 @@
 import { ApiError, handleApiError, parseBody, validateMethod } from '@/lib/api-utils';
+import { createColor } from '@/lib/create-color';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -6,6 +7,7 @@ type TechnologyInput = {
   name: string;
   description?: string;
   tags?: string[];
+  color?: string;
 };
 
 // GET /api/technologies - Get all technologies
@@ -38,7 +40,7 @@ export async function POST(req: NextRequest) {
   try {
     validateMethod(req, ['POST']);
 
-    const { name, description, tags } = await parseBody<TechnologyInput>(req);
+    const { name, description, tags, color } = await parseBody<TechnologyInput>(req);
 
     if (!name) {
       throw new ApiError('Name is required', 400);
@@ -48,6 +50,7 @@ export async function POST(req: NextRequest) {
       data: {
         name,
         description,
+        color: color || createColor(name),
         tags: {
           connect: tags?.map((tag: string) => ({ id: tag })) || [],
         },
