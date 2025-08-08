@@ -101,7 +101,7 @@ export default function ProjectSwimlanes({ projects: initialProjects }: ProjectS
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
         >
-            <div className="flex gap-4 w-full overflow-x-auto">
+            <div className="flex gap-4 py-4 w-full overflow-x-auto">
                 {STATUSES.map((status) => (
                     <DroppableSwimlane
                         key={status}

@@ -16,14 +16,14 @@ export default function DroppableSwimlane({ id, label, projects, activeId }: Dro
   return (
     <div
       ref={setNodeRef}
-      className={`flex-1 min-w-[250px] bg-white rounded shadow p-2 transition-all ${isOver ? "ring-2 ring-blue-400" : ""}`}
+      className={`flex-1 min-w-[280px] rounded-lg p-3 bg-slate-50 border border-slate-200 shadow-sm transition-all ${isOver ? "ring-2 ring-blue-400 ring-offset-1" : ""}`}
     >
-      <h2 className="font-semibold text-center mb-2 border-b pb-1 text-sm uppercase tracking-wide">
+      <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-700 mb-3 px-2 py-1 bg-slate-100 rounded border border-slate-200 text-center">
         {label}
       </h2>
-      <div className="flex flex-col gap-2 min-h-[60px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 min-h-[60px]">
         {projects.length === 0 ? (
-          <div className="text-xs text-gray-400 text-center">No projects</div>
+          <div className="col-span-full text-xs text-gray-400 text-center">No projects</div>
         ) : (
           projects.map((project) => (
             <DraggableProjectCard key={project.id} project={project} dragging={activeId === project.id} />
