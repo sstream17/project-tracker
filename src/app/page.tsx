@@ -18,7 +18,9 @@ export default async function DashboardPage() {
   const technologiesInUse = new Set<string>();
   projects.forEach(project => {
     project.technologies.forEach(tech => {
-      technologiesInUse.add(tech.id);
+      if (project.status !== 'IDEA') {
+        technologiesInUse.add(tech.id);
+      }
     });
   });
 
